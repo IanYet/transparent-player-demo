@@ -5,7 +5,11 @@
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"preinstall": "npx only-allow pnpm"
+		"preinstall": "npx only-allow pnpm",
+		"dev:browser": "pnpm -F browser-demo dev",
+		"dev:server": "pnpm -F server-demo dev",
+		"build:player": "pnpm -F player-demo build",
+		"build:server": "pnpm -F server-demo build"
 	},
 	"keywords": [],
 	"author": "",
