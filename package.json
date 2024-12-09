@@ -8,6 +8,7 @@
 		"preinstall": "npx only-allow pnpm",
 		"dev:browser": "pnpm -F browser-demo dev",
 		"dev:server": "pnpm -F server-demo dev",
+		"dev:benchmark": "pnpm -F benchmark-demo dev",
 		"build:player": "pnpm -F player-demo build",
 		"build:server": "pnpm -F server-demo build"
 	},
