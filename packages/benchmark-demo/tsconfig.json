@@ -1,5 +1,7 @@
 {
 	"compilerOptions": {
+		"types": ["@types/wicg-file-system-access"],
+
 		"target": "ES2020",
 		"useDefineForClassFields": true,
 		"module": "ESNext",
