@@ -41,6 +41,7 @@ async function render() {
 	for await (const bitmap of renderBitmaps) {
 		ctx.drawImage(bitmap, 0, 0, cav.width, cav.height)
 	}
+	renderBuffers.length = 0
 }
 requestAnimationFrame(render)
 
