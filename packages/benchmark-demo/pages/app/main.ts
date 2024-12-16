@@ -13,9 +13,14 @@ async function create(): Promise<Context> {
 	const cav = document.getElementById('canvas') as HTMLCanvasElement
 	const offCav = new OffscreenCanvas(cav.width, cav.height)
 	const ctx = cav.getContext('2d')!
-	const offCtx = offCav.getContext('2d')!
+	const offCtx = offCav.getContext('2d', { willReadFrequently: true })!
+
 	const renderBuffers: ImageData[] = []
-	const canRender = false
+	const canRender = true
+
+	const casFont = new FontFace('cas', 'url(/CascadiaCodePL.ttf)')
+	const font = await casFont.load()
+	document.fonts.add(font)
 
 	return {
 		cav,
@@ -36,6 +41,7 @@ async function render() {
 	context.renderEnabled = false
 
 	const { ctx, renderBuffers, cav } = context
+	ctx.clearRect(0, 0, cav.width, cav.height)
 	const renderBitmaps = renderBuffers.map((buffer) => window.createImageBitmap(buffer))
 
 	for await (const bitmap of renderBitmaps) {
@@ -45,4 +51,6 @@ async function render() {
 }
 requestAnimationFrame(render)
 
-draw()
+console.time('draw')
+await draw()
+console.timeEnd('draw')
