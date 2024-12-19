@@ -7,9 +7,10 @@
 		"forceConsistentCasingInFileNames": true,
 		"skipLibCheck": true, // 跳过类型库检查以提高性能
 		"strict": true, // 启用严格模式
-		"declaration": true, // 生成类型声明文件
-		"declarationMap": true, // 生成类型声明的映射文件
-		"sourceMap": true, // 生成源码映射文件
-		"allowSyntheticDefaultImports": true // 允许默认导入
+		"declaration": false, // 生成类型声明文件
+		"declarationMap": false, // 生成类型声明的映射文件
+		"sourceMap": false, // 生成源码映射文件
+		"allowSyntheticDefaultImports": true, // 允许默认导入
+		"outDir": "./dist"
 	}
 }
