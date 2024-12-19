@@ -1,6 +1,6 @@
 {
 	"compilerOptions": {
-		"types": ["@types/wicg-file-system-access"],
+		"types": ["@types/wicg-file-system-access", "@types/node"],
 
 		"target": "ES2020",
 		"useDefineForClassFields": true,
@@ -22,5 +22,5 @@
 		"noFallthroughCasesInSwitch": true,
 		"noUncheckedSideEffectImports": true
 	},
-	"include": ["pages"]
+	"include": ["pages", "server"]
 }

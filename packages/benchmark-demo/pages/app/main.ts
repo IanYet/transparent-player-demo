@@ -48,6 +48,7 @@ async function render() {
 		ctx.drawImage(bitmap, 0, 0, cav.width, cav.height)
 	}
 	renderBuffers.length = 0
+	console.log('clear')
 }
 requestAnimationFrame(render)
 

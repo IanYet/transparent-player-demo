@@ -3,22 +3,34 @@ import { context } from './main'
 
 export async function draw() {
 	const { offCav, offCtx, renderBuffers } = context
+	const frameData = await readClipData(0)
+
 	offCtx.clearRect(0, 0, offCav.width, offCav.height)
 
-	offCtx.fillStyle = 'red'
-	// offCtx.font = '30px cas'
-	// offCtx.fillText('const :: |> <| => != >= <=', 0, 30)
-	offCtx.fillRect(0, 0, 540, 960)
+	offCtx.fillStyle = '#ffffff'
+	// offCtx.fillRect(0, 0, offCav.width, offCav.height)
+	offCtx.font = '30px cas'
+	offCtx.textBaseline = 'top'
+	offCtx.fillText('Do not go gentle into ', 10, 10)
+	offCtx.fillText('that good night,', 10, 110)
+	offCtx.fillText('Old age should burn and rave', 10, 410)
+	offCtx.fillText('at close of day;', 10, 510)
+	offCtx.fillText('Rage, rage', 10, 810)
+	offCtx.fillText('against the dying of the light.', 10, 910)
 
 	const image = offCtx.getImageData(0, 0, offCav.width, offCav.height)
-	console.time('process')
-	const res = processBack(image)
-	console.timeEnd('process')
+	console.time('perspective process')
+	const perspectiveRes = processPerspective2(image)
+	console.timeEnd('perspective process')
 
-	renderBuffers.push(res)
-	offCtx.clearRect(0, 0, offCav.width, offCav.height)
+	console.time('clip process')
+	const clipRes = processClip(perspectiveRes, frameData)
+	console.timeEnd('clip process')
 
+	renderBuffers.push(clipRes)
 	context.renderEnabled = true
+
+	offCtx.clearRect(0, 0, offCav.width, offCav.height)
 }
 
 const isInbound = (u: number, v: number, w: number, h: number) => u >= 0 && u < w && v >= 0 && v < h
@@ -45,7 +57,8 @@ const setColor = (u: number, v: number, imageData: ImageData, color: vec4) => {
 	imageData.data[i + 3] = color[3]
 }
 
-function process(srcImageData: ImageData) {
+//@ts-ignore
+function processPerspective(srcImageData: ImageData) {
 	const { offCtx } = context
 	const tarImageData = offCtx.createImageData(srcImageData)
 
@@ -95,7 +108,7 @@ function process(srcImageData: ImageData) {
 	return tarImageData
 }
 
-function processBack(srcImageData: ImageData) {
+function processPerspective2(srcImageData: ImageData) {
 	const { offCtx } = context
 	const tarImageData = offCtx.createImageData(srcImageData)
 	for (let v = 0; v < tarImageData.height; v++) {
@@ -143,6 +156,75 @@ function processBack(srcImageData: ImageData) {
 	return tarImageData
 }
 
+function writeBytes(arr: Uint8Array, start: number, length: number, value: 0 | 1) {
+	for (let i = 0; i < length; i++) {
+		arr[start + i] = value
+	}
+}
+
+/**
+ *
+ * @param frameNum 0-based
+ */
+async function readClipData(frameNum: number) {
+	const res = await fetch('/maybe.bin')
+	const allClipData = new Uint16Array(await res.arrayBuffer())
+	const [clipWidth, clipHeight] = [256, 512]
+	const start = clipWidth * clipHeight * frameNum
+	const end = start + clipWidth * clipHeight
+	let frameStart = 0,
+		frameEnd = 0
+
+	const frameAlphaData = new Uint8Array(clipWidth * clipHeight)
+
+	for (let i = 0, pixelNum = 0; i < allClipData.length; i++) {
+		if (pixelNum === start) {
+			frameStart = i
+		}
+		if (pixelNum === end) {
+			frameEnd = i
+			break
+		}
+		pixelNum = pixelNum + allClipData[i]
+	}
+	const clipData = allClipData.slice(frameStart, frameEnd)
+
+	let sig: 0 | 1 = 0
+	let resStart = 0
+
+	clipData.forEach((num) => {
+		writeBytes(frameAlphaData, resStart, num, sig)
+		sig = ((sig + 1) % 2) as 0 | 1
+		resStart += num
+	})
+
+	return frameAlphaData
+}
+
+function processClip(imageData: ImageData, clipImageData: Uint8Array) {
+	const { offCtx } = context
+	const tarImageData = offCtx.createImageData(imageData)
+	const [stepX, stepY] = [imageData.width / 256, imageData.height / 512]
+
+	console.log(stepX, stepY)
+
+	for (let i = 0; i < tarImageData.height; i++) {
+		for (let j = 0; j < tarImageData.width; j++) {
+			const [u, v] = [Math.floor(j / stepX), Math.floor(i / stepY)]
+			const color = getColor(j, i, imageData)
+			color[3] = clipImageData[v * 256 + u] ? 0 : color[3]
+			setColor(j, i, tarImageData, color)
+		}
+	}
+
+	return tarImageData
+}
+
+const perspectiveMaitrix = mat3.transpose(
+	mat3.create(),
+	mat3.fromValues(0.4, 0, 0.2, -0.2, 0.6, 0.2, -0.4, 0, 1)
+)
+const perspectiveMaitrixInvert = mat3.invert(mat3.create(), perspectiveMaitrix)
 /**
  * w&h for normalize
  * @param iptV2
@@ -160,15 +242,7 @@ function perspectiveCpuShader(
 	oh: number,
 	needInvert?: boolean
 ) {
-	const perspectiveMaitrix = mat3.transpose(
-		mat3.create(),
-		mat3.fromValues(0.4, 0, 0.2, -0.2, 0.6, 0.2, -0.4, 0, 1)
-	)
-	const mat = mat3.clone(perspectiveMaitrix)
-
-	if (needInvert) {
-		mat3.invert(mat, perspectiveMaitrix)
-	}
+	const mat = needInvert ? perspectiveMaitrixInvert : perspectiveMaitrix
 
 	const iptV = vec3.fromValues(iptV2[0] / (iw - 1), iptV2[1] / (ih - 1), 1)
 	const optV = vec3.create()
