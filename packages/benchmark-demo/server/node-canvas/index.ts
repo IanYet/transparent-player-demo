@@ -6,7 +6,7 @@ import {
 	ImageData,
 	registerFont,
 } from 'canvas'
-import { draw } from './draw'
+import { draw } from '../node-canvas/draw'
 import { createWriteStream } from 'fs'
 
 type Context = {
@@ -18,6 +18,9 @@ type Context = {
 	renderEnabled: boolean
 }
 
+export const base_public_url =
+	'/Users/ian/Projects/Personal/transparent-player-demo/packages/benchmark-demo/public/'
+
 async function create(): Promise<Context> {
 	const cav = createCanvas(540, 960)
 	const offCav = createCanvas(540, 960)
@@ -27,7 +30,9 @@ async function create(): Promise<Context> {
 	const renderBuffers: ImageData[] = []
 	const canRender = true
 
-	registerFont('', { family: 'cas' })
+	registerFont(`${base_public_url}CascadiaCodePL.ttf`, {
+		family: 'cas',
+	})
 
 	return {
 		cav,
@@ -41,13 +46,17 @@ async function create(): Promise<Context> {
 
 export const context = await create()
 
-const createImage = async (imageData: ImageData): Promise<Image> =>
-	new Promise((resolve, reject) => {
+const createImage = (imageData: ImageData): Promise<Image> => {
+	const tempCanvas = createCanvas(imageData.width, imageData.height)
+	const tempCtx = tempCanvas.getContext('2d')
+	tempCtx.putImageData(imageData, 0, 0)
+
+	return new Promise((resolve) => {
 		const img = new Image()
 		img.onload = () => resolve(img)
-		img.onerror = reject
-		img.src = Buffer.from(imageData.data)
+		img.src = tempCanvas.toDataURL()
 	})
+}
 
 async function render() {
 	// render or export

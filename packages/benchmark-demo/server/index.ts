@@ -1,3 +1,3 @@
-import { main as nodeCanvas } from './node-canvas/index'
+import { main as nodeCanvas } from '../server/node-canvas/index'
 
 nodeCanvas()

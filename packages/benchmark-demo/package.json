@@ -6,12 +6,14 @@
 	"scripts": {
 		"dev": "vite",
 		"build": "tsc && vite build",
-		"preview": "vite preview"
+		"preview": "vite preview",
+		"build-server": "esbuild ./server/index.ts --bundle --platform=node --outfile=./server/dist/index.js --format=esm  --tree-shaking --packages=external"
 	},
 	"devDependencies": {
 		"@types/node": "^22.10.2",
 		"@types/three": "^0.170.0",
 		"@types/wicg-file-system-access": "^2023.10.5",
+		"esbuild": "^0.24.0",
 		"typescript": "~5.6.2",
 		"vite": "^6.0.1"
 	},

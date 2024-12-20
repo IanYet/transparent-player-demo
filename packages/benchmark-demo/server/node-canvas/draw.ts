@@ -1,7 +1,8 @@
 import { vec2, vec4 } from 'gl-matrix'
-import { context } from './index'
+import { base_public_url, context } from '../node-canvas/index'
 import { getColor, perspectiveCpuShader, setColor, writeBytes } from './utils'
 import { ImageData } from 'canvas'
+import fs from 'fs/promises'
 
 export async function draw() {
 	const { offCav, offCtx, renderBuffers } = context
@@ -76,8 +77,8 @@ function processPerspective2(srcImageData: ImageData) {
  * @param frameNum 0-based
  */
 async function readClipData(frameNum: number) {
-	const res = await fetch('/maybe.bin')
-	const allClipData = new Uint16Array(await res.arrayBuffer())
+	const rawData = await fs.readFile(`${base_public_url}maybe.bin`)
+	const allClipData = new Uint16Array(rawData.buffer)
 	const [clipWidth, clipHeight] = [256, 512]
 	const start = clipWidth * clipHeight * frameNum
 	const end = start + clipWidth * clipHeight
