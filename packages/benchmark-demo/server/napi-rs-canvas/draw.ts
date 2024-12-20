@@ -1,7 +1,7 @@
 import { vec2, vec4 } from 'gl-matrix'
-import { base_public_url, context } from '../skia-canvas/index'
+import { base_public_url, context } from '../napi-rs-canvas/index'
 import { getColor, perspectiveCpuShader, setColor, writeBytes } from './utils'
-import { ImageData } from 'skia-canvas'
+import { ImageData } from '@napi-rs/canvas'
 import fs from 'fs/promises'
 
 export async function draw() {

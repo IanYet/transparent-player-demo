@@ -19,6 +19,7 @@
 	},
 	"dependencies": {
 		"@mediapipe/selfie_segmentation": "^0.1.1675465747",
+		"@napi-rs/canvas": "^0.1.65",
 		"@tensorflow-models/body-segmentation": "^1.0.2",
 		"@tensorflow/tfjs-backend-webgl": "^4.22.0",
 		"@tensorflow/tfjs-core": "^4.22.0",

@@ -1,3 +1,3 @@
-import { main as skiaCanvas } from '../server/skia-canvas/index'
+import { main as skrCanvas } from '../server/napi-rs-canvas/index'
 
-skiaCanvas()
+skrCanvas()
