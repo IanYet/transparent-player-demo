@@ -1,4 +1,4 @@
-import { ImageData } from 'canvas'
+import { ImageData } from 'skia-canvas'
 import { mat3, vec2, vec3, vec4 } from 'gl-matrix'
 
 export const isInbound = (u: number, v: number, w: number, h: number) =>
