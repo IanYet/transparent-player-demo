@@ -28,6 +28,9 @@ importers:
       gl-matrix:
         specifier: ^3.4.3
         version: 3.4.3
+      skia-canvas:
+        specifier: ^1.0.2
+        version: 1.0.2
       three:
         specifier: ^0.171.0
         version: 0.171.0

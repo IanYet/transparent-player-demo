@@ -1,3 +1,3 @@
-import { main as nodeCanvas } from '../server/node-canvas/index'
+import { main as skiaCanvas } from '../server/skia-canvas/index'
 
-nodeCanvas()
+skiaCanvas()
