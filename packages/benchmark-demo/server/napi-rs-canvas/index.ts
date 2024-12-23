@@ -59,15 +59,10 @@ async function render() {
 
 	const pngData = await cav.encode('png')
 	await fs.writeFile('napi-rs-canvas.png', pngData)
-
-	// await cav.saveAs(`skia-canvas.png`)
-
-	// const os = createWriteStream('node-canvas.png')
-	// const stream = cav.createPNGStream()
-	// stream.pipe(os)
-	// os.on('finish', () => console.log('saved'))
 }
 export async function main() {
+	console.time('draw: ')
 	await draw()
+	console.timeEnd('draw: ')
 	await render()
 }

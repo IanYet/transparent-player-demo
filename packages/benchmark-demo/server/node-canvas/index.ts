@@ -76,6 +76,8 @@ async function render() {
 	os.on('finish', () => console.log('saved'))
 }
 export async function main() {
+	console.time('draw: ')
 	await draw()
+	console.timeEnd('draw: ')
 	await render()
 }
