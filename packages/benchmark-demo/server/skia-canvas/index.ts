@@ -1,4 +1,4 @@
-import { Canvas, CanvasRenderingContext2D, FontLibrary, ImageData } from 'skia-canvas'
+import { Canvas, type CanvasRenderingContext2D, FontLibrary, ImageData } from 'skia-canvas'
 import { draw } from '../skia-canvas/draw'
 
 type Context = {
@@ -52,10 +52,11 @@ async function render() {
 	const { ctx, renderBuffers, cav } = context
 	ctx.clearRect(0, 0, cav.width, cav.height)
 
-	const renderBitmaps = renderBuffers.map((buffer) => createImage(buffer))
+	// const renderBitmaps = renderBuffers.map((buffer) => createImage(buffer))
 
-	for await (const bitmap of renderBitmaps) {
-		ctx.drawCanvas(bitmap, 0, 0, cav.width, cav.height)
+	for await (const bitmap of renderBuffers) {
+		// ctx.drawCanvas(bitmap, 0, 0, cav.width, cav.height)
+		ctx.drawImage(bitmap, 0, 0, cav.width, cav.height)
 	}
 
 	await cav.saveAs(`skia-canvas.png`)

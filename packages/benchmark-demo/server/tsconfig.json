@@ -2,8 +2,10 @@
 	"compilerOptions": {
 		"module": "ES2022", // ESM 模块格式
 		"target": "ES2022", // 输出兼容的目标 JavaScript 版本
-		"moduleResolution": "node", // 使用 Node.js 的模块解析方式
-		"esModuleInterop": true, // 允许 CommonJS 和 ESM 模块互操作
+		"moduleResolution": "bundler", // 使用 Node.js 的模块解析方式
+		"allowJs": true,
+		"noEmit": true,
+		"esModuleInterop": false, // 允许 CommonJS 和 ESM 模块互操作
 		"forceConsistentCasingInFileNames": true,
 		"skipLibCheck": true, // 跳过类型库检查以提高性能
 		"strict": true, // 启用严格模式
